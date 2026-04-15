@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="DevPath"/>
+<meta name="theme-color" content="#000000"/>
+<title>DevPath — Dart & Flutter Roadmap</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --bg: #f2f2f7;
+    --bg2: #ffffff;
+    --bg3: #e5e5ea;
+    --label: #000000;
+    --label2: #3c3c43cc;
+    --label3: #3c3c4399;
+    --sep: rgba(60,60,67,0.12);
+    --blue: #007aff;
+    --green: #34c759;
+    --orange: #ff9500;
+    --red: #ff3b30;
+    --purple: #af52de;
+    --teal: #5ac8fa;
+    --yellow: #ffcc00;
+    --fill: rgba(120,120,128,0.12);
+    --fill2: rgba(120,120,128,0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --bg2: #1c1c1e;
+      --bg3: #2c2c2e;
+      --label: #ffffff;
+      --label2: rgba(235,235,245,0.6);
+      --label3: rgba(235,235,245,0.3);
+      --sep: rgba(84,84,88,0.65);
+      --fill: rgba(120,120,128,0.2);
+      --fill2: rgba(120,120,128,0.12);
+    }
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--label);
+    min-height: 100vh;
+    overscroll-behavior: none;
+  }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* Nav bar */
+  .navbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(242,242,247,0.85);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--sep);
+    padding: env(safe-area-inset-top, 44px) 16px 0;
+  }
+  @media (prefers-color-scheme: dark) {
+    .navbar { background: rgba(0,0,0,0.85); }
+  }
+  .navbar-inner { display: flex; align-items: center; justify-content: space-between; height: 44px; }
+  .navbar-title { font-size: 17px; font-weight: 600; letter-spacing: -0.4px; }
+  .navbar-back { font-size: 17px; color: var(--blue); display: flex; align-items: center; gap: 4px; cursor: pointer; padding: 8px 0; }
+  .large-title { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; padding: 8px 20px 16px; }
+
+  /* Sections */
+  .section { margin: 0 0 32px; }
+  .section-header { font-size: 13px; font-weight: 400; color: var(--label2); text-transform: uppercase; letter-spacing: 0.4px; padding: 0 20px 8px; }
+  .section-body { background: var(--bg2); border-radius: 12px; margin: 0 16px; overflow: hidden; }
+
+  /* Rows */
+  .row {
+    display: flex; align-items: center; padding: 11px 16px; gap: 12px;
+    cursor: pointer; transition: background 0.15s; position: relative; min-height: 44px;
+  }
+  .row:not(:last-child)::after { content: ''; position: absolute; bottom: 0; left: 60px; right: 0; height: 0.5px; background: var(--sep); }
+  .row:active { background: var(--fill2); }
+
+  .row-icon {
+    width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center;
+    justify-content: center; font-size: 17px; flex-shrink: 0;
+  }
+  .row-content { flex: 1; min-width: 0; }
+  .row-title { font-size: 17px; font-weight: 400; letter-spacing: -0.4px; }
+  .row-subtitle { font-size: 13px; color: var(--label2); margin-top: 1px; }
+  .row-right { display: flex; align-items: center; gap: 6px; }
+  .row-badge { font-size: 13px; color: var(--label2); }
+  .chevron { color: var(--label3); font-size: 14px; }
+  .checkmark { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .checkmark.done { background: var(--green); color: white; }
+  .checkmark.todo { border: 2px solid var(--sep); }
+
+  /* Progress */
+  .progress-card {
+    background: var(--bg2); border-radius: 16px; margin: 8px 16px 28px;
+    padding: 18px 20px; overflow: hidden; position: relative;
+  }
+  .progress-bar-track { background: var(--fill); border-radius: 999px; height: 6px; margin-top: 10px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--teal)); border-radius: 999px; transition: width 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+
+  /* Day detail */
+  .detail-scroll { padding: 0 0 40px; }
+  .detail-hero { padding: 20px 20px 8px; }
+  .day-badge { display: inline-block; background: var(--fill); padding: 4px 10px; border-radius: 999px; font-size: 13px; color: var(--label2); margin-bottom: 8px; }
+  .detail-title { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.15; }
+  .detail-week { font-size: 15px; color: var(--label2); margin-top: 4px; }
+
+  .detail-section { margin: 24px 16px 0; }
+  .detail-section-title { font-size: 13px; font-weight: 600; color: var(--label2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; padding-left: 4px; }
+  .detail-box { background: var(--bg2); border-radius: 12px; overflow: hidden; }
+  .detail-row { display: flex; align-items: flex-start; padding: 12px 16px; gap: 12px; position: relative; }
+  .detail-row:not(:last-child)::after { content: ''; position: absolute; bottom: 0; left: 16px; right: 0; height: 0.5px; background: var(--sep); }
+  .bullet { width: 7px; height: 7px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .detail-text { font-size: 15px; line-height: 1.5; color: var(--label); }
+
+  .task-box { background: var(--blue); border-radius: 12px; padding: 16px; margin: 24px 16px 0; }
+  .task-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .task-text { font-size: 15px; color: white; line-height: 1.5; font-weight: 400; }
+
+  .yt-btn {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg2); border-radius: 12px; padding: 14px 16px;
+    margin: 24px 16px 0; cursor: pointer; text-decoration: none; color: var(--label);
+  }
+  .yt-icon { width: 36px; height: 36px; background: #ff0000; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .yt-text { flex: 1; }
+  .yt-title { font-size: 15px; font-weight: 500; }
+  .yt-sub { font-size: 13px; color: var(--label2); margin-top: 1px; }
+
+  .done-btn {
+    display: flex; align-items: center; justify-content: center;
+    margin: 24px 16px 0; height: 50px; border-radius: 12px; font-size: 17px;
+    font-weight: 600; cursor: pointer; transition: all 0.2s; border: none;
+    font-family: inherit;
+  }
+
+  /* Week chips */
+  .week-chips { display: flex; gap: 8px; overflow-x: auto; padding: 0 16px 20px; scrollbar-width: none; }
+  .week-chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex-shrink: 0; padding: 7px 16px; border-radius: 999px; font-size: 15px;
+    font-weight: 500; cursor: pointer; transition: all 0.2s; border: none; font-family: inherit;
+  }
+  .chip.active { color: white; }
+  .chip.inactive { background: var(--fill); color: var(--label2); }
+
+  /* Stat pills */
+  .stats { display: flex; gap: 10px; padding: 0 16px 24px; }
+  .stat-pill { flex: 1; background: var(--bg2); border-radius: 12px; padding: 14px 12px; text-align: center; }
+  .stat-num { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+  .stat-label { font-size: 12px; color: var(--label2); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<!-- HOME SCREEN -->
+<div class="screen active" id="home-screen">
+  <div class="navbar">
+    <div class="navbar-inner">
+      <span style="font-size:22px">📱</span>
+      <span class="navbar-title">DevPath</span>
+      <span style="width:40px"></span>
+    </div>
+  </div>
+  <div class="large-title">My Roadmap</div>
+
+  <div class="progress-card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:15px;color:var(--label2)">Overall Progress</div>
+        <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-top:2px" id="progress-pct">0%</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px" id="progress-count">0</div>
+        <div style="font-size:15px;color:var(--label2)">of 60 days</div>
+      </div>
+    </div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-pill">
+      <div class="stat-num" style="color:var(--blue)">60</div>
+      <div class="stat-label">Total Days</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-num" style="color:var(--orange)">2h</div>
+      <div class="stat-label">Per Day</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-num" style="color:var(--green)">1</div>
+      <div class="stat-label">App Shipped</div>
+    </div>
+  </div>
+
+  <div id="weeks-home"></div>
+</div>
+
+<!-- WEEK SCREEN -->
+<div class="screen" id="week-screen">
+  <div class="navbar">
+    <div class="navbar-inner">
+      <span class="navbar-back" onclick="showHome()">‹ Roadmap</span>
+      <span class="navbar-title" id="week-nav-title"></span>
+      <span style="width:80px"></span>
+    </div>
+  </div>
+  <div class="large-title" id="week-large-title"></div>
+  <div class="week-chips" id="week-chips"></div>
+  <div id="days-list"></div>
+</div>
+
+<!-- DAY SCREEN -->
+<div class="screen" id="day-screen">
+  <div class="navbar">
+    <div class="navbar-inner">
+      <span class="navbar-back" id="day-back-btn">‹ Week</span>
+      <span class="navbar-title" id="day-nav-title"></span>
+      <span style="width:80px"></span>
+    </div>
+  </div>
+  <div class="detail-scroll" id="day-detail"></div>
+</div>
+
+<script>
+const weeks = [
+  {
+    week:1, month:1, theme:"Dart Foundations", emoji:"🌱",
+    color:"#34c759", colorDark:"#30d158",
+    days:[
+      {day:1,title:"Setup & Hello World",topics:["Install VS Code + Dart extension","Install Dart SDK from dart.dev","Write your first print() statement","Run your first program"],task:"Print your name, age, and a fun fact about yourself in 3 separate lines",yt:{title:"Dart Setup & Hello World",q:"dart programming setup VS code hello world beginner 2024"}},
+      {day:2,title:"Variables & Data Types",topics:["String, int, double, bool types","var keyword — Dart infers the type","Declaring and assigning variables","Dart naming conventions (camelCase)"],task:"Create variables for a person's profile: name, age, height, isStudent, then print them all",yt:{title:"Dart Variables & Data Types",q:"dart variables data types tutorial beginner"}},
+      {day:3,title:"String Magic",topics:["String interpolation with $variable","String methods: length, toUpperCase, contains, trim","Multi-line strings with triple quotes","String concatenation with +"],task:"Build a sentence generator — user's name + age forms a full sentence using interpolation",yt:{title:"Dart String Methods",q:"dart string interpolation methods tutorial"}},
+      {day:4,title:"Numbers & Math",topics:["int vs double — when to use each","Basic operators: +, -, *, /, ~/","dart:math library: sqrt, pow, min, max","Remainder with %"],task:"Build a simple calculator that takes two numbers and prints add, subtract, multiply, divide results",yt:{title:"Dart Numbers & Math",q:"dart numbers math operators tutorial beginner"}},
+      {day:5,title:"Booleans & Conditions",topics:["true and false values","if / else if / else structure","Comparison: ==, !=, >, <, >=, <=","Logical: && (and), || (or), ! (not)"],task:"Build an age checker: prints different messages if user can vote, drive, or drink based on age",yt:{title:"Dart If Else Conditions",q:"dart if else conditions boolean tutorial"}},
+      {day:6,title:"Practice Day",topics:["Combine everything from days 1–5","Build without tutorials","Debug your own errors — this is key","Read your own code out loud"],task:"Build a full 'About Me' profile printer — uses variables, conditions, and string interpolation together",yt:{title:"Dart Beginner Practice",q:"dart beginner practice projects exercises"}},
+      {day:7,title:"Rest & Review",topics:["Rewatch one video that confused you","Read your own week 1 code","Write down 5 things you learned","Try explaining Dart to an imaginary friend"],task:"Write down 5 concepts from this week in plain English — no code, just your own words",yt:{title:"Dart Basics Full Review",q:"dart programming basics full course beginner"}},
+    ]
+  },
+  {
+    week:2, month:1, theme:"Control & Loops", emoji:"🔁",
+    color:"#007aff", colorDark:"#0a84ff",
+    days:[
+      {day:8,title:"Switch Statements",topics:["switch / case / default syntax","When switch beats if/else (multiple exact values)","break keyword — why it matters","Matching multiple cases"],task:"Build a day-of-week printer: input 1–7, prints Monday–Sunday using switch",yt:{title:"Dart Switch Statement",q:"dart switch case statement tutorial"}},
+      {day:9,title:"For Loops",topics:["Basic for loop: for(int i=0; i<n; i++)","Loop counter and why it starts at 0","Iterating a set number of times","Nested for loops — loop inside a loop"],task:"Print a full times table (1–10) for any number using a for loop",yt:{title:"Dart For Loops",q:"dart for loop tutorial beginner"}},
+      {day:10,title:"While & Do-While",topics:["while loop — checks condition first","do-while — runs at least once","Infinite loop danger and how to avoid it","break and continue keywords"],task:"Build a number guessing game — keep asking until user guesses correctly using while",yt:{title:"Dart While Loop",q:"dart while loop do while tutorial"}},
+      {day:11,title:"Lists",topics:["Creating lists: var items = []","Add, remove, access by index","Methods: add(), remove(), length, contains()","Looping over a list with for-in"],task:"Build a shopping list app — can add items, remove items, and display the full list",yt:{title:"Dart Lists Tutorial",q:"dart list array tutorial beginner"}},
+      {day:12,title:"Maps",topics:["Key-value pairs: var map = {}","Creating and accessing map values","Methods: keys, values, containsKey","Iterating over maps with forEach"],task:"Store a full person profile in a Map (name, age, city, job) and print each key-value pair",yt:{title:"Dart Maps Tutorial",q:"dart map tutorial key value pairs"}},
+      {day:13,title:"Practice Day",topics:["Combine lists, maps, and loops","Build something you'd actually use","Intentionally make errors and fix them","Read error messages carefully"],task:"Build a student grade tracker — stores names and grades in a Map, calculates class average",yt:{title:"Dart Lists Maps Practice",q:"dart lists maps loops practice project"}},
+      {day:14,title:"Rest & Review",topics:["Review all loop types","Rewrite a previous task using loops","Test yourself: write a loop without looking it up","Look up one thing you're still confused about"],task:"Rewrite your Week 1 About Me using a List and a for loop to print each fact",yt:{title:"Dart Control Flow Review",q:"dart loops conditions complete review"}},
+    ]
+  },
+  {
+    week:3, month:1, theme:"Functions & OOP", emoji:"🧩",
+    color:"#af52de", colorDark:"#bf5af2",
+    days:[
+      {day:15,title:"Functions Intro",topics:["Defining functions with void","Calling a function","Why functions exist — don't repeat yourself","Function naming (verb-based: getUser, printName)"],task:"Write 5 functions that each do one thing: greet, add, isEven, square, printLine",yt:{title:"Dart Functions Tutorial",q:"dart functions tutorial beginner"}},
+      {day:16,title:"Parameters & Return",topics:["Passing parameters into functions","Return types: int, String, bool, double","The return keyword","Functions with multiple parameters"],task:"Build a BMI calculator function: takes weight and height, returns BMI as double with a category string",yt:{title:"Dart Parameters Return Values",q:"dart function parameters return values tutorial"}},
+      {day:17,title:"Optional & Named Params",topics:["Named parameters with {}","Optional positional parameters with []","Default parameter values","required keyword for mandatory named params"],task:"Build a greet() function: required name, optional title (default 'Friend'), optional formal bool",yt:{title:"Dart Named Optional Parameters",q:"dart named optional parameters tutorial"}},
+      {day:18,title:"Classes & Objects",topics:["What is a class — a blueprint","Defining properties (fields) and methods","Creating an object with MyClass()","Accessing properties with dot notation"],task:"Create a Car class with brand, model, speed properties and a describe() method",yt:{title:"Dart Classes Objects OOP",q:"dart classes objects OOP tutorial beginner"}},
+      {day:19,title:"Constructors",topics:["Default constructor syntax","this keyword — refers to current object","Constructor shorthand (this.name)","Named constructors for multiple ways to create"],task:"Create a Person class with a constructor — make 3 different people and print their profiles",yt:{title:"Dart Constructors Tutorial",q:"dart constructor tutorial this keyword"}},
+      {day:20,title:"Inheritance",topics:["extends keyword — child inherits parent","super keyword — calls parent constructor","Overriding methods with @override","Is-A relationship concept"],task:"Create an Animal class, extend to Dog and Cat — each has unique sound() and sleep() methods",yt:{title:"Dart Inheritance Tutorial",q:"dart inheritance extends override tutorial"}},
+      {day:21,title:"Rest & Review",topics:["Review classes and functions","Rebuild a previous project using OOP","Watch an OOP explainer if still confused","Test: can you create a class from memory?"],task:"Rebuild your grade tracker from Day 13 as a proper class with methods — Student class, GradeBook class",yt:{title:"Dart OOP Review Practice",q:"dart object oriented programming practice project"}},
+    ]
+  },
+  {
+    week:4, month:1, theme:"Advanced Dart", emoji:"⚡",
+    color:"#ff9500", colorDark:"#ff9f0a",
+    days:[
+      {day:22,title:"Null Safety",topics:["Dart is null-safe by default","Nullable types with ? (String?)","Null-aware operator ?? (fallback value)","Null-aware access ?. (safe property access)","late keyword for late initialisation"],task:"Fix a program that crashes from a null value — use ?. and ?? to make it safe",yt:{title:"Dart Null Safety Tutorial",q:"dart null safety tutorial ?. ?? beginner"}},
+      {day:23,title:"Async & Futures",topics:["Why async matters — network, files, timers","Future<T> type — a value that will exist","async and await keywords","Future.delayed for fake async operations"],task:"Write a fake food recognition function using Future.delayed — 'scanning...' then returns ingredients",yt:{title:"Dart Async Await Future",q:"dart async await future tutorial beginner"}},
+      {day:24,title:"Error Handling",topics:["try / catch / finally blocks","throw keyword — create your own errors","Exception vs Error","When to handle vs when to let crash"],task:"Build a safe division function — catches divide by zero and returns a helpful message instead of crashing",yt:{title:"Dart Error Handling Try Catch",q:"dart try catch error handling exceptions"}},
+      {day:25,title:"Mixins & Interfaces",topics:["mixin keyword — share behaviour between classes","implements — force a class to have certain methods","abstract class — a class you can't instantiate","When to use each"],task:"Create a Flyable mixin with fly() method — apply it to both a Bird class and a Plane class",yt:{title:"Dart Mixins Interfaces Abstract",q:"dart mixins interfaces abstract class tutorial"}},
+      {day:26,title:"Enums & Generics",topics:["enum keyword — named constants","Using enums for app states: loading, success, error","Generic types <T> — type-safe reusable code","Where you see generics: List<String>, Future<int>"],task:"Create an enum for LoadingState and a generic swap() function that work
